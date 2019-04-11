@@ -192,7 +192,7 @@ do
             CR_DTSFILES=$CR_DTSFILES_J530F
             BUILD_ZIMAGE
             BUILD_DTB
-            PACK_BOOT_IMG
+            PACK_BOOT_IMG_TREBLE
             echo " "
             echo "----------------------------------------------"
             echo "$CR_VARIANT kernel build finished."
@@ -211,7 +211,7 @@ do
             CR_DTSFILES=$CR_DTSFILES_J530M
             BUILD_ZIMAGE
             BUILD_DTB
-            PACK_BOOT_IMG
+            PACK_BOOT_IMG_TREBLE
             echo " "
             echo "----------------------------------------------"
             echo "$CR_VARIANT kernel build finished."
@@ -230,7 +230,7 @@ do
             CR_DTSFILES=$CR_DTSFILES_J730F
             BUILD_ZIMAGE
             BUILD_DTB
-            PACK_BOOT_IMG
+            PACK_BOOT_IMG_TREBLE
             echo " "
             echo "----------------------------------------------"
             echo "$CR_VARIANT kernel build finished."
@@ -251,7 +251,7 @@ do
             CR_DTSFILES=$CR_DTSFILES_J710X
             BUILD_ZIMAGE
             BUILD_DTB
-            PACK_BOOT_IMG
+            PACK_BOOT_IMG_TREBLE
             echo " "
             echo "----------------------------------------------"
             echo "$CR_VARIANT kernel build finished."
@@ -272,7 +272,7 @@ do
             CR_DTSFILES=$CR_DTSFILES_J701X
             BUILD_ZIMAGE
             BUILD_DTB
-            PACK_BOOT_IMG
+            PACK_BOOT_IMG_TREBLE
             echo " "
             echo "----------------------------------------------"
             echo "$CR_VARIANT kernel build finished."
@@ -312,7 +312,7 @@ do
             CR_DTSFILES=$CR_DTSFILES_G610X
             BUILD_ZIMAGE
             BUILD_DTB
-            PACK_BOOT_IMG
+            PACK_BOOT_IMG_TREBLE
             echo " "
             echo "----------------------------------------------"
             echo "$CR_VARIANT kernel build finished."
