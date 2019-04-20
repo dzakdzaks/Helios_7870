@@ -140,14 +140,6 @@ PACK_BOOT_IMG()
 	echo " "
 	echo "Building Boot.img for $CR_VARIANT"
 	cp -rf $CR_RAMDISK/* $CR_AIK
-	# To avoid any permission issues
-	echo "Fix Ramdisk Permissions"
-	cd $CR_RAMDISK
-	find -type d -exec chmod 755 {} \;
-	find -type f -exec chmod 644 {} \;
-	find -name "*.rc" -exec chmod 750 {} \;
-	find -name "*.sh" -exec chmod 750 {} \;
-	chmod -Rf 750 init sbin
 	# Copy Ramdisk
 	cp -rf $CR_RAMDISK/* $CR_AIK
 	# Move Compiled kernel and dtb to A.I.K Folder
@@ -167,14 +159,6 @@ PACK_BOOT_IMG_TREBLE()
 	echo " "
 	echo "Building Treble Boot.img for $CR_VARIANT"
 	cp -rf $CR_RAMDISK_TREBLE/* $CR_AIK
-	# To avoid any permission issues
-	echo "Fix Ramdisk Permissions"
-	cd $CR_RAMDISK_TREBLE
-	find -type d -exec chmod 755 {} \;
-	find -type f -exec chmod 644 {} \;
-	find -name "*.rc" -exec chmod 750 {} \;
-	find -name "*.sh" -exec chmod 750 {} \;
-	chmod -Rf 750 init sbin
 	# Copy Ramdisk
 	cp -rf $CR_RAMDISK_TREBLE/* $CR_AIK
 	# Move Compiled kernel and dtb to A.I.K Folder
