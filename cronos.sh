@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Cronos Build Script V3.0
+# Cronos Build Script V3.0_Treble
 # For Exynos7870
 # Coded by BlackMesa/AnanJaser1211 @2019
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,8 +34,8 @@ CR_KERNEL=$CR_DIR/arch/arm64/boot/Image
 # Compiled dtb by dtbtool
 CR_DTB=$CR_DIR/boot.img-dtb
 # Kernel Name and Version
-CR_VERSION=V2.7
-CR_NAME=HeliosPro_Kernel
+CR_VERSION=V2.8
+CR_NAME=Helios_Treble_Kernel
 # Thread count
 CR_JOBS=5
 # Target android version and platform (7/n/8/o/9/p)
@@ -51,36 +51,23 @@ export CROSS_COMPILE=$CR_TC
 export ANDROID_MAJOR_VERSION=$CR_ANDROID
 export PLATFORM_VERSION=$CR_PLATFORM
 export $CR_ARCH
-# J710X Specific
-CR_ANDROID_J710X=n
-CR_PLATFORM_J710X=7.0.0
 ##########################################
 # Device specific Variables [SM-J530_2GB (F/G/S/L/K)]
 CR_DTSFILES_J530F="exynos7870-j5y17lte_eur_open_00.dtb exynos7870-j5y17lte_eur_open_01.dtb exynos7870-j5y17lte_eur_open_02.dtb exynos7870-j5y17lte_eur_open_03.dtb exynos7870-j5y17lte_eur_open_05.dtb exynos7870-j5y17lte_eur_open_07.dtb"
 CR_CONFG_J530F=j5y17lte_defconfig
-CR_VARIANT_J530F=J530F_2GB
+CR_VARIANT_J530F=J530F
 # Device specific Variables [SM-J530_3GB (Y/YM/FM/GM)]
 CR_DTSFILES_J530M="exynos7870-j5y17lte_sea_openm_03.dtb exynos7870-j5y17lte_sea_openm_05.dtb exynos7870-j5y17lte_sea_openm_07.dtb"
 CR_CONFG_J530M=j5y17lte_defconfig
-CR_VARIANT_J530M=J530Y_3GB
+CR_VARIANT_J530M=J530Y
 # Device specific Variables [SM-J730F/G]
 CR_DTSFILES_J730F="exynos7870-j7y17lte_eur_open_00.dtb exynos7870-j7y17lte_eur_open_01.dtb exynos7870-j7y17lte_eur_open_02.dtb exynos7870-j7y17lte_eur_open_03.dtb exynos7870-j7y17lte_eur_open_04.dtb exynos7870-j7y17lte_eur_open_05.dtb exynos7870-j7y17lte_eur_open_06.dtb exynos7870-j7y17lte_eur_open_07.dtb"
 CR_CONFG_J730F=j7y17lte_defconfig
-CR_VARIANT_J730F=J730F-G
-# Device specific Variables [SM-J710X]
-CR_DTSFILES_J710X="exynos7870-j7xelte_eur_open_00.dtb exynos7870-j7xelte_eur_open_01.dtb exynos7870-j7xelte_eur_open_02.dtb exynos7870-j7xelte_eur_open_03.dtb exynos7870-j7xelte_eur_open_04.dtb"
-CR_CONFG_J710X=j7xelte_defconfig
-CR_VARIANT_J710X=J710X
-CR_RAMDISK_J710X=$CR_DIR/Helios/Ramdisk_J710X
-# Device specific Variables [SM-G610X]
-CR_DTSFILES_G610X="exynos7870-on7xelte_swa_open_00.dtb exynos7870-on7xelte_swa_open_01.dtb exynos7870-on7xelte_swa_open_02.dtb"
-CR_CONFG_G610X=on7xelteswa_defconfig
-CR_VARIANT_G610X=G610X
+CR_VARIANT_J730F=J730X
 # Device specific Variables [SM-J600X]
 CR_DTSFILES_J600X="exynos7870-j6lte_ltn_00.dtb exynos7870-j6lte_ltn_02.dtb"
 CR_CONFG_J600X=j6lte_defconfig
 CR_VARIANT_J600X=J600X
-CR_RAMDISK_J600X=$CR_DIR/Helios/Treble
 # Script functions
 
 read -p "Clean source (y/n) > " yn
@@ -177,8 +164,8 @@ clear
 echo "----------------------------------------------"
 echo "$CR_NAME $CR_VERSION Build Script"
 echo "----------------------------------------------"
-PS3='Please select your option (1-7): '
-menuvar=("SM-J530_2G" "SM-J530_3G" "SM-J730F-G" "SM-J710X" "SM-G610X" "SM-J600X" "Exit")
+PS3='Please select your option (1-5): '
+menuvar=("SM-J530_2G" "SM-J530_3G" "SM-J730F-G" "SM-J600X" "Exit")
 select menuvar in "${menuvar[@]}"
 do
     case $menuvar in
@@ -190,7 +177,7 @@ do
             CR_DTSFILES=$CR_DTSFILES_J530F
             BUILD_ZIMAGE
             BUILD_DTB
-            PACK_BOOT_IMG
+            PACK_BOOT_IMG_TREBLE
             echo " "
             echo "----------------------------------------------"
             echo "$CR_VARIANT kernel build finished."
@@ -209,7 +196,7 @@ do
             CR_DTSFILES=$CR_DTSFILES_J530M
             BUILD_ZIMAGE
             BUILD_DTB
-            PACK_BOOT_IMG
+            PACK_BOOT_IMG_TREBLE
             echo " "
             echo "----------------------------------------------"
             echo "$CR_VARIANT kernel build finished."
@@ -228,28 +215,7 @@ do
             CR_DTSFILES=$CR_DTSFILES_J730F
             BUILD_ZIMAGE
             BUILD_DTB
-            PACK_BOOT_IMG
-            echo " "
-            echo "----------------------------------------------"
-            echo "$CR_VARIANT kernel build finished."
-            echo "$CR_VARIANT Ready at $CR_OUT"
-            echo "Combined DTB Size = $sizT Kb"
-            echo "Press Any key to end the script"
-            echo "----------------------------------------------"
-            read -n1 -r key
-            break
-            ;;
-        "SM-J710X")
-            clear
-            echo "Starting $CR_VARIANT_J710X kernel build..."
-            CR_VARIANT=$CR_VARIANT_J710X
-            CR_CONFG=$CR_CONFG_J710X
-            CR_DTSFILES=$CR_DTSFILES_J710X
-            export ANDROID_MAJOR_VERSION=$CR_ANDROID_J710X
-            export PLATFORM_VERSION=$CR_PLATFORM_J710X            
-            BUILD_ZIMAGE
-            BUILD_DTB
-            PACK_BOOT_IMG
+            PACK_BOOT_IMG_TREBLE
             echo " "
             echo "----------------------------------------------"
             echo "$CR_VARIANT kernel build finished."
@@ -265,7 +231,9 @@ do
             echo "Starting $CR_VARIANT_J600X kernel build..."
             CR_VARIANT=$CR_VARIANT_J600X
             CR_CONFG=$CR_CONFG_J600X
-            CR_DTSFILES=$CR_DTSFILES_J600X          
+            CR_DTSFILES=$CR_DTSFILES_J600X
+            export ANDROID_MAJOR_VERSION=$CR_ANDROID
+            export PLATFORM_VERSION=$CR_PLATFORM            
             BUILD_ZIMAGE
             BUILD_DTB
             PACK_BOOT_IMG_TREBLE
@@ -279,25 +247,6 @@ do
             read -n1 -r key
             break
             ;;            
-        "SM-G610X")
-            clear
-            echo "Starting $CR_VARIANT_G610X kernel build..."
-            CR_VARIANT=$CR_VARIANT_G610X
-            CR_CONFG=$CR_CONFG_G610X
-            CR_DTSFILES=$CR_DTSFILES_G610X
-            BUILD_ZIMAGE
-            BUILD_DTB
-            PACK_BOOT_IMG
-            echo " "
-            echo "----------------------------------------------"
-            echo "$CR_VARIANT kernel build finished."
-            echo "$CR_VARIANT Ready at $CR_OUT"
-            echo "Combined DTB Size = $sizT Kb"
-            echo "Press Any key to end the script"
-            echo "----------------------------------------------"
-            read -n1 -r key
-            break
-            ;;
         "Exit")
             break
             ;;

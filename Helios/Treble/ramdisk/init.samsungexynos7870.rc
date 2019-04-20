@@ -3,6 +3,7 @@ import init.baseband.rc
 import init.carrier.rc
 import init.wifi.rc
 import init.fac.rc
+import init.gps.rc
 
 on early-init
     mkdir /efs 0771 radio system
@@ -25,6 +26,10 @@ on init
     symlink /data/app /factory
     symlink /dev/block/platform/13540000.dwmmc0/by-name/PERSISTENT /dev/block/persistent
     symlink /dev/block/platform/13540000.dwmmc0/by-name/STEADY /dev/block/steady
+	
+on post-fs
+    # set RLIMIT_MEMLOCK to 64MB
+    setrlimit 8 67108864 67108864
 
 on post-fs-data
 # Log data folder
@@ -88,6 +93,10 @@ on boot
 	chmod 755 /sys/kernel/debug
     chown system system /sys/kernel/debug
 #   setprop ro.radio.noril yes
+
+	# Set permissions for ttysac2
+	chown system system /dev/ttySAC2
+	chmod 0660 /dev/ttySAC2
 
     # Assign TCP buffer thresholds to be ceiling value of technology maximums
     # Increased technology maximums should be reflected here.
@@ -834,7 +843,7 @@ on fs
 #ARGOSD network_throughput
     chown system system /dev/network_throughput
 # ARGOSD
-service argos-daemon /system/bin/argosd
+service argos-daemon /vendor/bin/argosd
     class main
     user system
     group system radio
