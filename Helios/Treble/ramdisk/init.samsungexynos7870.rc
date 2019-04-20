@@ -61,6 +61,9 @@ on post-fs-data
     chown system radio /sys/class/audio/earjack/state
     chown system radio /sys/class/audio/earjack/mic_adc
 
+# Magnetic sensor YAS539 lib
+    mkdir /data/system/yas_lib 0770 system system
+
 # Audio I2C node for TFA amp
     chmod 0660 /dev/i2c-20
     chown audio audio /dev/i2c-20
@@ -694,13 +697,18 @@ on fs
     chmod 0660 /sys/class/ion_cma/ion_video_ext/isolated
     chown system system /sys/class/ion_cma/ion_video_ext/isolated
 
+# Permissions for gnss
+    chmod 0660 /dev/gnss_ipc
+    chown system system /dev/gnss_ipc
 # Permissions for backlight
     chown system system /sys/class/backlight/panel/brightness
 
 # Permissions for LCD
     chown system radio /sys/class/lcd/panel/manufacture_code
     chown system radio /sys/class/lcd/panel/lcd_type
+    chown system system /sys/class/lcd/panel/siop_enable
     chown system system /sys/class/lcd/panel/temperature
+    chown system radio /sys/class/lcd/panel/power_reduce
     chown system system /sys/class/lcd/panel/lux
     chown system media_rw /sys/class/lcd/panel/adaptive_control
     chown system system /sys/class/lcd/panel/dpui
@@ -708,7 +716,11 @@ on fs
     chown system system /sys/devices/svc/OCTA/SVC_OCTA
     chown system system /sys/devices/svc/OCTA/SVC_OCTA_CHIPID
 
+# Permissions for ALPM
+    chown system system /sys/class/lcd/panel/alpm
+
 # Permissions for MDNIE
+    chown system media_rw /sys/class/mdnie/mdnie/bypass
     chown system media_rw /sys/class/mdnie/mdnie/mode
     chown system media_rw /sys/class/mdnie/mdnie/scenario
     chown system system /sys/class/mdnie/mdnie/accessibility
@@ -716,23 +728,14 @@ on fs
     chown system system /sys/class/mdnie/mdnie/mdnie_ldu
     chown system system /sys/class/mdnie/mdnie/night_mode
     chown system system /sys/class/mdnie/mdnie/whiteRGB
-    chown system system /sys/class/mdnie/mdnie/light_notification
-    chown system system /sys/class/mdnie/mdnie/color_lens
+    chown system system /sys/class/mdnie/mdnie/night_mode
+    chown system system /sys/class/mdnie/mdnie/mdnie_ldu
 
 # For cpefs partition
     check_fs /dev/block/platform/13540000.dwmmc0/by-name/CPEFS ext4
     mount ext4 /dev/block/platform/13540000.dwmmc0/by-name/CPEFS /cpefs noatime nosuid nodev barrier=1
     chown radio system /cpefs
     chmod 0771 /cpefs
-
-#For cpdebug partition
-    wait /dev/block/platform/13540000.dwmmc0/by-name/EFS
-    mkdir /efs/cpdebug
-    chown radio system /efs/cpdebug
-    chmod 0660 /efs/cpdebug
-    symlink /dev/block/platform/13540000.dwmmc0/by-name/CP_DEBUG /efs/cpdebug/node
-    chown radio system /efs/cpdebug/node
-    chmod 0660 /efs/cpdebug/node
 
 # Copy DRM Key
     copy /system/app/wv.keys /factory/wv.keys
@@ -749,6 +752,10 @@ on fs
 # Permissions for S.LSI ESE
     chmod 0660 /dev/p3
     chown system system /dev/p3
+
+# Permissions for TouchScreen
+    chown system radio /sys/class/sec/tsp/cmd
+    chown system system /sys/class/sec/tsp/input/enabled
 
 # Permissions for input_booster
     chown system radio /sys/class/input_booster/level
@@ -822,7 +829,7 @@ on fs
 # FM Radio
     chown system audio /dev/radio0
     chmod 0660 /dev/radio0
-    chown bluetooth bluetooth /sys/devices/bluetooth/fm_dtv_ctrl
+    chown bluetooth bluetooth /sys/devices/bluetooth/lna_en 
 
 #ARGOSD network_throughput
     chown system system /dev/network_throughput
@@ -871,6 +878,12 @@ service rpmbd /system/bin/rpmbd
 on property:sys.mobicoredaemon.enable=true
     start cs_service
     write /proc/iccc_ready 1
+
+on property:ro.multisim.simslotcount=1
+    setprop persist.radio.multisim.config ss
+
+on property:ro.multisim.simslotcount=2
+    setprop persist.radio.multisim.config dsds
 
 # Modem boot daemon
 #    service cpboot-daemon /system/bin/cbd -d
