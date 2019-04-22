@@ -3,7 +3,6 @@ import init.baseband.rc
 import init.carrier.rc
 import init.wifi.rc
 import init.fac.rc
-import init.gps.rc
 
 on early-init
     mkdir /efs 0771 radio system
@@ -26,10 +25,6 @@ on init
     symlink /data/app /factory
     symlink /dev/block/platform/13540000.dwmmc0/by-name/PERSISTENT /dev/block/persistent
     symlink /dev/block/platform/13540000.dwmmc0/by-name/STEADY /dev/block/steady
-	
-on post-fs
-    # set RLIMIT_MEMLOCK to 64MB
-    setrlimit 8 67108864 67108864
 
 on post-fs-data
 # Log data folder
@@ -56,6 +51,9 @@ on post-fs-data
 
     setprop vold.post_fs_data_done 1
 
+# Magnetic sensor YAS537 lib
+    mkdir /data/system/yas_lib 0770 system system
+
 # /efs/factory.prop for Dual / Single SIM settings
     chown radio radio /efs/factory.prop
     chmod 0600 /efs/factory.prop
@@ -66,18 +64,9 @@ on post-fs-data
     chown system radio /sys/class/audio/earjack/state
     chown system radio /sys/class/audio/earjack/mic_adc
 
-# Magnetic sensor YAS539 lib
-    mkdir /data/system/yas_lib 0770 system system
-
 # Audio I2C node for TFA amp
     chmod 0660 /dev/i2c-20
     chown audio audio /dev/i2c-20
-
-    chown system audio /sys/class/nxp/tfa_log/data
-    chown system audio /sys/class/nxp/tfa_log/data_maxx
-    chown system audio /sys/class/nxp/tfa_log/count_overxmax
-    chown system audio /sys/class/nxp/tfa_log/data_maxt
-    chown system audio /sys/class/nxp/tfa_log/count_overtmax
 
 on boot
     # override init.rc to keep plenty of large order chunks around
@@ -93,10 +82,6 @@ on boot
 	chmod 755 /sys/kernel/debug
     chown system system /sys/kernel/debug
 #   setprop ro.radio.noril yes
-
-	# Set permissions for ttysac2
-	chown system system /dev/ttySAC2
-	chmod 0660 /dev/ttySAC2
 
     # Assign TCP buffer thresholds to be ceiling value of technology maximums
     # Increased technology maximums should be reflected here.
@@ -124,6 +109,8 @@ on boot
     chmod 0664 /sys/class/sec/sec_nad/nad_all
     chown system radio /sys/class/sec/sec_nad/nad_support
     chmod 0664 /sys/class/sec/sec_nad/nad_support
+    chown system radio /sys/class/sec/sec_nad/nad_api
+    chmod 0664 /sys/class/sec/sec_nad/nad_api
     chown system radio /dev/block/NAD_REFER
     chmod 0664 /dev/block/NAD_REFER
 
@@ -249,6 +236,7 @@ setprop ro.mst.support 0
     chmod 664 /sys/devices/system/sec_os_ctrl/migrate_os
 
 # Sensors permissions
+
 # Accelerometer_sensor
     chown system radio /sys/class/sensors/accelerometer_sensor/raw_data
     chown system radio /sys/class/sensors/accelerometer_sensor/calibration
@@ -285,6 +273,7 @@ setprop ro.mst.support 0
     chown system radio /sys/class/sensors/gyro_sensor/temperature
     chown system radio /sys/class/sensors/gyro_sensor/selftest
     chown system radio /sys/class/sensors/gyro_sensor/selftest_dps
+    chown system radio /sys/class/sensors/gyro_sensor/selftest_revised
     chown system radio /sys/class/sensors/gyro_sensor/vendor
     chown system radio /sys/class/sensors/gyro_sensor/name
 
@@ -709,6 +698,7 @@ on fs
 # Permissions for gnss
     chmod 0660 /dev/gnss_ipc
     chown system system /dev/gnss_ipc
+
 # Permissions for backlight
     chown system system /sys/class/backlight/panel/brightness
 
@@ -761,10 +751,6 @@ on fs
 # Permissions for S.LSI ESE
     chmod 0660 /dev/p3
     chown system system /dev/p3
-
-# Permissions for TouchScreen
-    chown system radio /sys/class/sec/tsp/cmd
-    chown system system /sys/class/sec/tsp/input/enabled
 
 # Permissions for input_booster
     chown system radio /sys/class/input_booster/level
@@ -954,7 +940,7 @@ on property:ro.debuggable=1
     write /sys/module/kgdboc/parameters/kgdboc ttyFIQ1
     write /sys/module/fiq_debugger/parameters/kgdb_enable 1
 
-# SysScope port
+# Sysscope
 service prepare_param /system/bin/prepare_param.sh /dev/block/platform/13540000.dwmmc0/by-name/PARAM
     class core
     user root
